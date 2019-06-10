@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh">
+    <head>
+
+        <meta charset="utf-8">
+        <title>花卉识别 —— By Zhangle</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="icon" href="{{static_url('res/icon-dog.png')}}" sizes="32x32"/>
+
+    </head>
+
+    <body>
+    
+        <div id="main" style="text-align: center;">
+            <h2>花卉识别</h2>
+            <form>
+                拍摄图片：<input type="file" accept="image/*" capture="camera" id="takePhoto"><br><br><br>
+                拍摄结果<br>
+                <canvas id="myCanvas" width="299" height="299" style="border:1px solid #d3d3d3;">
+                您的浏览器不支持 HTML5 canvas 标签。
+                </canvas>
+            </form>
+            <div>
+                <h4>识别结果：</h4>
+                <h4 id="result"></h4>
+            </div>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="{{static_url('js/index.js')}}"></script>
+
+    </body>
+
+</html>
