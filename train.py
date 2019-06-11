@@ -6,7 +6,7 @@ import tensorflow as tf
 from tensorflow.python.framework import graph_util
 
 # 保存训练数据通过瓶颈层后提取的特征向量
-TRAIN_FILE = './train_dir/model.pb'
+TRAIN_FILE = 'train_dir/model.pb'
 # 处理好之后的数据文件。
 INPUT_DATA = 'flower_processed_data.npy'
 # inception-v3 模型瓶颈层的节点个数
@@ -20,7 +20,7 @@ N_CLASSES = 5
 
 def train():
     # 加载预处理好的数据。
-    processed_data = np.load(INPUT_DATA)
+    processed_data = np.load(os.path.join(os.path.dirname(__file__), INPUT_DATA))
     # 获取训练数据
     training_images = processed_data[0]
     n_training_example = len(training_images)
@@ -88,7 +88,7 @@ def train():
         print('Final test accuracy = %.1f%%' % (test_accuracy * 100))
         # 把训练好的模型保存为pb二进制文件，模型加载可以参考data_process.py文件进行重新加载模型
         constant_graph = graph_util.convert_variables_to_constants(sess, sess.graph_def, ["output/prob"])
-        with tf.gfile.FastGFile(TRAIN_FILE, mode='wb') as f:
+        with tf.gfile.GFile(os.path.join(os.path.dirname(__file__), TRAIN_FILE), mode='wb') as f:
             f.write(constant_graph.SerializeToString())
 if __name__ == '__main__':
     # os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"

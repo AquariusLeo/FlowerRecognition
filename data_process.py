@@ -10,7 +10,7 @@ INPUT_DATA = 'flower_photos'
 # 输出文件地址。我们将整理后的图片数据通过numpy的格式保存。
 OUTPUT_FILE = 'flower_processed_data.npy'
 # 下载的谷歌训练好的inception-v3模型文件名
-MODEL_FILE = './inceptionV3/tensorflow_inception_graph.pb'
+MODEL_FILE = 'inceptionV3/tensorflow_inception_graph.pb'
 # inception-v3 模型中代表瓶颈层结果的张量名称
 BOTTLENECK_TENSOR_NAME = 'pool_3/_reshape:0'
 # 图像输入张量所对应的名称
@@ -21,7 +21,7 @@ TEST_PERCENTAGE = 10
 
 # 读取数据并将数据分割成训练数据、验证数据和测试数据。
 def create_image_lists(sess, testing_percentage, validation_percentage,bottleneck_tensor,jpeg_data_tensor):
-    sub_dirs = [x[0] for x in os.walk(INPUT_DATA)]
+    sub_dirs = [x[0] for x in os.walk(os.path.join(os.path.dirname(__file__), INPUT_DATA))]
     is_root_dir = True
 
     # 初始化各个数据集。
@@ -45,7 +45,7 @@ def create_image_lists(sess, testing_percentage, validation_percentage,bottlenec
         file_list  =[]
         dir_name = os.path.basename(sub_dir)
         for extension in extensions:
-            file_glob = os.path.join(INPUT_DATA, dir_name, '*.' + extension)
+            file_glob = os.path.join(os.path.dirname(__file__), INPUT_DATA, dir_name, '*.' + extension)
             file_list.extend(glob.glob(file_glob))
             if not file_list: continue
             print("processing:", dir_name)
@@ -54,7 +54,7 @@ def create_image_lists(sess, testing_percentage, validation_percentage,bottlenec
         for file_name in file_list:
             i += 1
             # 读取并解析图片，将图片转化为299*299以方便inception-v3模型来处理。
-            image_raw_data = gfile.FastGFile(file_name, 'rb').read()
+            image_raw_data = gfile.GFile(file_name, 'rb').read()
             image_value = sess.run(bottleneck_tensor,{jpeg_data_tensor:image_raw_data})
             image_value = np.squeeze(image_value)
             # image = tf.image.decode_jpeg(image_raw_data)
@@ -92,7 +92,7 @@ def create_image_lists(sess, testing_percentage, validation_percentage,bottlenec
 def create_inception_graph():
     #加载已训练好的inception-v3模型
     with tf.Graph().as_default() as graph:
-        with gfile.FastGFile(MODEL_FILE, 'rb') as f:
+        with gfile.GFile(os.path.join(os.path.dirname(__file__), MODEL_FILE), 'rb') as f:
             graph_def = tf.GraphDef()
             graph_def.ParseFromString(f.read())
             bottleneck_tensor, jpeg_data_tensor = tf.import_graph_def(graph_def, name='', return_elements=[BOTTLENECK_TENSOR_NAME, JPEG_DATA_TENSOR_NAME])
@@ -106,7 +106,7 @@ def main():
         sess.run(init)
         processed_data = create_image_lists(sess, TEST_PERCENTAGE, VALIDATION_PERCENTAGE,bottleneck_tensor,jpeg_data_tensor)
         # 通过numpy格式保存处理后的数据。
-        np.save(OUTPUT_FILE, processed_data)
+        np.save(os.path.join(os.path.dirname(__file__), OUTPUT_FILE), processed_data)
 
 
 if __name__ == '__main__':

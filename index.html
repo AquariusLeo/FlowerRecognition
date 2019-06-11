@@ -1,34 +1,83 @@
-<!doctype html>
-<html lang="zh">
+<!DOCTYPE html>
+<html lang="en">
+ 
     <head>
-
-        <meta charset="utf-8">
-        <title>花卉识别 —— By Zhangle</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+        <meta charset="UTF-8">
+        <title>花卉识别——By Zhangle</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="{{static_url('css/cropper.min.css')}}">
+        <link rel="stylesheet" href="{{static_url('css/ImgCropping.css')}}">
         <link rel="icon" href="{{static_url('res/icon-dog.png')}}" sizes="32x32"/>
-
+ 
+        <style>
+            .showImg {
+                border: solid 1px #e3e3e3;
+                padding: 5px;
+                margin-top: 10px;
+                margin: 0 auto;
+            }
+        </style>
+        
     </head>
-
+ 
     <body>
-    
-        <div id="main" style="text-align: center;">
-            <h2>花卉识别</h2>
-            <form>
-                拍摄图片：<input type="file" accept="image/*" capture="camera" id="takePhoto"><br><br><br>
-                拍摄结果<br>
-                <canvas id="myCanvas" width="299" height="299" style="border:1px solid #d3d3d3;">
-                您的浏览器不支持 HTML5 canvas 标签。
-                </canvas>
-            </form>
-            <div>
-                <h4>识别结果：</h4>
-                <h4 id="result"></h4>
+        <br><br><h2 style="text-align: center;">花卉识别</h2><br>
+
+        <div style="text-align: center;">
+            <label title="上传图片" for="chooseImg" class="l-btn choose-btn">
+                <input type="file" accept="image/*" capture="camera" name="file" id="chooseImg" class="hidden" onchange="selectImg(this)">
+                选择图片
+            </label>
+        </div>
+        <br>
+
+        <div class="showImg">
+            <img id="finalImg" src="" width="100%">
+        </div>
+        <br>
+
+        <div style="text-align: center;">
+            <h4>识别结果：</h4>
+            <h4 id="result"></h4>
+        </div>
+
+        <!--图片裁剪框 start-->
+        <div style="display: none" class="tailoring-container">
+            <div class="black-cloth" onclick="closeTailor(this)"></div>
+            <div class="tailoring-content">
+                <div class="tailoring-content-one">
+                    <div class="close-tailoring" onclick="closeTailor(this)">×</div>
+                </div>
+ 
+                <div class="tailoring-content-two">
+                    <div class="tailoring-box-parcel">
+                        <img id="tailoringImg">
+                    </div>
+                    <div class="preview-box-parcel">
+                        <p>图片预览：</p>
+                        <div class="square previewImg"></div>
+                        <!--  <div class="circular previewImg"></div>-->
+                    </div>
+                </div>
+ 
+                <div class="tailoring-content-three">
+                    <button class="l-btn cropper-reset-btn">复位</button>
+                    <button class="l-btn cropper-rotate-btn">旋转</button>
+                    <button class="l-btn cropper-scaleX-btn">换向</button>
+                    <button class="l-btn sureCut" id="sureCut">确定</button>
+                </div>
             </div>
         </div>
-        
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <!--图片裁剪框 end-->
+
+        <!-- 临时canvas，不显示 -->
+        <canvas id="tempCanvas" style="display: none; width: 299px; height: 299px"></canvas>
+ 
+        <script src="https://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+        <script src="{{static_url('js/cropper.min.js')}}"></script>
         <script src="{{static_url('js/index.js')}}"></script>
-
+ 
     </body>
-
+ 
 </html>

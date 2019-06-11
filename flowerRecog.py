@@ -14,6 +14,8 @@ JPEG_DATA_TENSOR_NAME = 'DecodeJpeg/contents:0'
 BOTTLENECK_TENSOR_SIZE = 2048
 # 定义神经网路的设置
 N_CLASSES = 5
+# 处理过的图片文件地址
+PROCESSED_IMAGES = 'flower_processed_data.npy'
 
 # 加载已训练好的inception-v3模型
 def create_inception_graph():
@@ -33,6 +35,7 @@ def create_trained_graph():
             BottleneckInputPlaceholder_tensor, final_tensor = tf.import_graph_def(graph_def, name='', return_elements=['BottleneckInputPlaceholder:0', 'output/prob:0'])
     return graph, BottleneckInputPlaceholder_tensor, final_tensor
 
+# 花卉识别函数
 def flower_recog(filepath):
     graph1, bottleneck_tensor, jpeg_data_tensor = create_inception_graph()
     with tf.Session(graph=graph1) as sess:
@@ -48,16 +51,10 @@ def flower_recog(filepath):
         print(final)
         result = np.argmax(final)
 
-    if result==0:
-        return '万寿菊'
-    elif result==1:
-        return '三色堇'
-    elif result==2:
-        return '月季'
-    elif result==3:
-        return '牵牛花'
-    elif result==4:
-        return '石竹'
+    # 获取标签值
+    processed_images=np.load(os.path.join(os.path.dirname(__file__), PROCESSED_IMAGES))
+    labels=processed_images[6]
+    return labels[result]
 
 def main():
     res=flower_recog('tmp.jpg')
